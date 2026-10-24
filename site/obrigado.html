@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Obrigado · Autograna</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1113" media="(prefers-color-scheme: dark)">
+<script>
+  try { var p = location.pathname; if (/\.html$/.test(p)) history.replaceState(null, '', p.replace(/\.html$/, '') + location.search + location.hash); } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .card{max-width:420px}
+  .picked{display:inline-block;margin:2px 0 14px;padding:6px 12px;border-radius:99px;background:var(--hover);font-size:13.5px;font-weight:500}
+  .note{margin:0 0 22px;color:var(--muted);font-size:14.5px}
+  textarea{display:block;width:100%;min-height:110px;resize:vertical;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:15px/1.45 var(--sans);color:var(--ink);margin-top:6px}
+  textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .msg{min-height:20px;margin:10px 0 0;font-size:13.5px;color:var(--muted)}
+  .msg.err{color:var(--out)}
+  .again{margin-top:30px;padding-top:22px;border-top:1px solid var(--line);text-align:center;font-size:14px;color:var(--muted)}
+  .again a.btn{margin-top:12px;text-decoration:none;color:var(--ink)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <a class="brand" href="/?site" aria-label="Autograna">
+      <img class="mark" src="icon.svg" alt="">
+      <div class="name">Auto<b>grana</b></div>
+    </a>
+
+    <!-- resposta do porquê -->
+    <div class="panel" id="vReason" hidden>
+      <h1>Valeu por responder!</h1>
+      <span class="picked" id="picked"></span>
+      <p class="note" id="note"></p>
+      <form id="fComment">
+        <label for="comment">Quer contar mais? (opcional)
+          <textarea id="comment" name="comment" maxlength="1500" placeholder="Qualquer detalhe ajuda a melhorar o app."></textarea>
+        </label>
+        <button class="btn primary" type="submit" id="bSend">Enviar</button>
+        <p class="msg" id="msg" role="status"></p>
+      </form>
+      <div class="again">
+        Mudou de ideia? Seus dados continuam guardados.
+        <a class="btn" href="/app?assinar=1">Continuar com o Autograna</a>
+      </div>
+    </div>
+
+    <!-- parar de receber e-mails -->
+    <div class="panel" id="vSair" hidden>
+      <h1 id="sairTitle">Parar de receber nossos e-mails?</h1>
+      <p class="sub" id="sairSub">Você não vai mais receber avisos sobre o teste grátis e a assinatura por e-mail. Sua conta continua normal.</p>
+      <button class="btn primary" type="button" id="bSair">Sim, não quero mais receber</button>
+      <p class="msg" id="msgSair" role="status"></p>
+    </div>
+
+    <!-- link quebrado -->
+    <div class="panel" id="vErro" hidden>
+      <h1>Esse link não funcionou</h1>
+      <p class="sub">Abra de novo pelo e-mail que você recebeu. Se continuar assim, é só responder o e-mail.</p>
+      <a class="btn" href="/app">Abrir o Autograna</a>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var u = q.get('u') || '', s = q.get('s') || '', r = q.get('r') || '';
+  // Tira os dados da barra de endereço (o link é pessoal).
+  try { history.replaceState(null, '', location.pathname + (q.get('sair') ? '?sair=1' : r ? '?r=' + encodeURIComponent(r) : '')); } catch (e) {}
+  var LABEL = {
+    caro: ['Achei caro', 'Entendemos. Se ajudar: no Pix você paga mês a mês, sem compromisso, e para quando quiser.'],
+    dificil: ['Não entendi como usar', 'Poxa, isso a gente quer melhorar. Se der outra chance, o Copiloto do app explica cada tela em poucos passos.'],
+    poucouso: ['Não usei o suficiente', 'Faz sentido. Seus dados ficam guardados: se voltar a precisar, é só assinar e continuar de onde parou.'],
+    faltou: ['Faltou alguma coisa que eu precisava', 'Conta pra gente o que faltou aqui embaixo. Muitas melhorias do app nasceram assim.'],
+    outroapp: ['Prefiro outro app ou planilha', 'Tudo bem! Se puder, conta qual você usa e o que ele tem de melhor.'],
+    outro: ['Outro motivo', 'Se puder, conta o motivo aqui embaixo. A gente lê tudo.']
+  };
+  var $ = function (id) { return document.getElementById(id); };
+  function send(data) {
+    data.u = u; data.s = s;
+    return fetch('/.netlify/functions/feedback', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) })
+      .then(function (res) { return res.json().catch(function () { return {}; }).then(function (d) { if (!res.ok) throw new Error(d.error || 'Não deu pra salvar agora.'); return d; }); });
+  }
+  if (!u || !s) { $('vErro').hidden = false; return; }
+
+  if (q.get('sair')) {
+    $('vSair').hidden = false;
+    $('bSair').addEventListener('click', function () {
+      var b = this; b.disabled = true;
+      send({ a: 'sair' }).then(function () {
+        $('sairTitle').textContent = 'Pronto';
+        $('sairSub').textContent = 'Você não vai mais receber e-mails do Autograna. Sua conta continua normal e você pode entrar quando quiser.';
+        b.hidden = true; $('msgSair').textContent = '';
+      }).catch(function (e) { b.disabled = false; $('msgSair').className = 'msg err'; $('msgSair').textContent = e.message; });
+    });
+    return;
+  }
+
+  if (!LABEL[r]) { $('vErro').hidden = false; return; }
+  $('vReason').hidden = false;
+  $('picked').textContent = 'Você marcou: ' + LABEL[r][0];
+  $('note').textContent = LABEL[r][1];
+  // Grava a resposta só quando a pagina está mesmo aberta na tela (robôs que conferem links não contam).
+  var saved = false;
+  function saveReason() {
+    if (saved || document.visibilityState !== 'visible') return;
+    saved = true;
+    send({ r: r }).catch(function (e) { saved = false; $('msg').className = 'msg err'; $('msg').textContent = e.message; });
+  }
+  setTimeout(saveReason, 600);
+  document.addEventListener('visibilitychange', function () { setTimeout(saveReason, 600); });
+
+  $('fComment').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var t = $('comment').value.trim(), b = $('bSend');
+    if (!t) { $('msg').className = 'msg err'; $('msg').textContent = 'Escreva alguma coisa antes de enviar.'; return; }
+    b.disabled = true; $('msg').className = 'msg'; $('msg').textContent = 'Enviando…';
+    send({ r: r, comment: t }).then(function () {
+      saved = true; $('msg').textContent = 'Recebido. Obrigado de verdade!'; $('comment').disabled = true; b.hidden = true;
+    }).catch(function (e) { b.disabled = false; $('msg').className = 'msg err'; $('msg').textContent = e.message; });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+rules_version = '2';
+// Regras do Autograna — cole no Firebase em Firestore Database > Regras > Publicar.
+// Troque o e-mail em isAdmin() se o dono do painel mudar (e também em ADMIN_EMAILS no Netlify).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['autograna11@gmail.com'];
+    }
+
+    // Teste grátis ou assinatura em dia — gravado só pelo servidor.
+    function hasAccess(uid) {
+      let b = /databases/$(database)/documents/billing/$(uid);
+      return exists(b) && request.time < get(b).data.accessUntil;
+    }
+
+    // Lançamentos, contas, metas… de cada pessoa: só ela, e só com teste ou assinatura em dia.
+    match /data/users/{uid}/{document=**} {
+      allow read, write: if signedIn() && request.auth.uid == uid && (hasAccess(uid) || isAdmin());
+    }
+
+    // Situação da assinatura: a pessoa e o dono leem; ninguém grava pelo navegador.
+    match /billing/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if false;
+    }
+
+    // Respostas do e-mail "por que não assinou": gravadas só pelo servidor; só o dono lê.
+    match /feedback/{uid} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Controle do teste grátis por e-mail: só o servidor mexe.
+    match /trials/{key} {
+      allow read, write: if false;
+    }
+
+    // "Online agora": cada um atualiza o próprio sinal; só o dono vê a lista.
+    match /presence/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['email', 'name', 'lastSeen', 'device', 'tab'])
+        && request.resource.data.lastSeen == request.time
+        && (!('email' in request.resource.data) || request.resource.data.email == request.auth.token.email);
+      allow delete: if false;
+    }
+  }
+}

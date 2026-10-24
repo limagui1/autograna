@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrar · Autograna</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1113" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<script>
+  // App instalado no iPhone: no modo claro, barra de status normal (texto escuro);
+  // no escuro, a barra fica por cima do topo do app (texto claro).
+  try { document.write('<meta name="apple-mobile-web-app-status-bar-style" content="' + (matchMedia('(prefers-color-scheme: dark)').matches ? 'black-translucent' : 'default') + '">'); } catch (e) {}
+  // Endereço sem ".html" na barra (ex.: /app.html vira /app).
+  try { var p = location.pathname; if (/\.html$/.test(p)) history.replaceState(null, '', (p === '/index.html' ? '/' : p.replace(/\.html$/, '')) + location.search + location.hash); } catch (e) {}
+</script>
+<meta name="apple-mobile-web-app-title" content="Autograna">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card">
+    <a class="brand" href="/?site" aria-label="Autograna, ver o site">
+      <img class="mark" src="icon.svg" alt="">
+      <div class="name">Auto<b>grana</b></div>
+    </a>
+
+    <div class="panel">
+
+      <!-- LOGIN -->
+      <div class="view" data-view="login" data-active="1">
+        <h1>Entrar</h1>
+        <p class="sub">Acesse sua conta para continuar.</p>
+
+        <div class="banner" data-el="login-banner" data-show="0">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.2" x2="12" y2="16.3"/></svg>
+          <span data-el="login-banner-text">E-mail ou senha incorretos.</span>
+        </div>
+
+        <form data-el="login-form" novalidate>
+          <label data-el="email-field">
+            <div class="lbtop"><span>E-mail</span></div>
+            <input type="email" placeholder="voce@exemplo.com" autocomplete="email" data-el="email-input">
+            <div class="errmsg">Digite um e-mail válido.</div>
+          </label>
+
+          <label data-el="pass-field">
+            <div class="lbtop">
+              <span>Senha</span>
+              <a href="#" data-el="forgot-link">Esqueci minha senha</a>
+            </div>
+            <div class="inpw">
+              <input type="password" placeholder="••••••••" autocomplete="current-password" data-el="pass-input">
+              <button type="button" class="eyeb" data-el="eye-toggle" aria-label="Mostrar senha">
+                <svg data-el="eye-icon" viewBox="0 0 24 24"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="errmsg">Digite sua senha.</div>
+          </label>
+
+          <button type="submit" class="btn primary" data-el="login-submit">
+            <span class="btxt">Entrar</span>
+            <span class="spin"></span>
+          </button>
+        </form>
+
+        <div class="rule">ou</div>
+
+        <button type="button" class="btn google" data-el="google-btn">
+          <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.6 29.3 35.5 24 35.5c-6.9 0-12.5-5.6-12.5-12.5S17.1 10.5 24 10.5c3.2 0 6 1.1 8.2 3l6-6C34.5 4.1 29.5 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.1 19 12.5 24 12.5c3.2 0 6 1.1 8.2 3l6-6C34.5 6.1 29.5 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.2-2 13.9-5.4l-6.4-5.4c-2 1.5-4.6 2.3-7.5 2.3-5.3 0-9.7-3.6-11.3-8.4l-6.6 5.1C9.4 39.6 16.1 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.9 36 44 30.6 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
+          <span class="btxt">Continuar com Google</span>
+          <span class="spin"></span>
+        </button>
+
+        <p class="legal">Você continua conectado neste aparelho até tocar em Sair.</p>
+        <div class="foot">Ainda não tem conta? <a href="#criar" data-el="signup-link">Teste grátis por 3 dias</a></div>
+      </div>
+
+      <!-- ESQUECI SENHA -->
+      <div class="view" data-view="forgot">
+        <button type="button" class="back" data-el="back-to-login">
+          <svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></svg>
+          Voltar
+        </button>
+        <h1>Esqueci minha senha</h1>
+        <p class="sub">Informe o e-mail da sua conta. Enviaremos um link para redefinir a senha.</p>
+
+        <div class="banner" data-el="forgot-banner" data-show="0">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.2" x2="12" y2="16.3"/></svg>
+          <span data-el="forgot-banner-text">Não encontramos uma conta com esse e-mail.</span>
+        </div>
+
+        <form data-el="forgot-form" novalidate>
+          <label data-el="forgot-field">
+            <div class="lbtop"><span>E-mail</span></div>
+            <input type="email" placeholder="voce@exemplo.com" autocomplete="email" data-el="forgot-input">
+            <div class="errmsg">Digite um e-mail válido.</div>
+          </label>
+
+          <button type="submit" class="btn primary" data-el="forgot-submit">
+            <span class="btxt">Enviar link de redefinição</span>
+            <span class="spin"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- CONFIRMAÇÃO DE ENVIO -->
+      <div class="view" data-view="sent">
+        <div class="okbox">
+          <div class="ic">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4Z"/><path d="m4 7 8 6 8-6"/></svg>
+          </div>
+          <h1>Verifique seu e-mail</h1>
+          <p class="sub">Enviamos um link de redefinição de senha para <span class="em" data-el="sent-email">voce@exemplo.com</span>. Se não aparecer em alguns minutos, olhe também o spam.</p>
+        </div>
+        <button type="button" class="btn" data-el="resend-btn">Reenviar e-mail</button>
+        <div class="foot"><a href="#" data-el="back-to-login-2">Voltar para o login</a></div>
+      </div>
+
+      <!-- CRIAR CONTA -->
+      <div class="view" data-view="signup">
+        <button type="button" class="back" data-el="back-to-login-3">
+          <svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></svg>
+          Voltar
+        </button>
+        <h1>Criar sua conta</h1>
+        <p class="sub" style="margin-bottom:12px">Leva menos de um minuto. Depois do teste, <span data-price>R$ 39,90</span> por mês, se quiser continuar.</p>
+        <span class="trialtag">3 dias grátis, sem cartão</span>
+
+        <div class="banner" data-el="signup-banner" data-show="0">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.2" x2="12" y2="16.3"/></svg>
+          <span data-el="signup-banner-text">Já existe uma conta com esse e-mail.</span>
+        </div>
+
+        <form data-el="signup-form" novalidate>
+          <label data-el="su-name-field">
+            <div class="lbtop"><span>Nome</span></div>
+            <input type="text" placeholder="Seu nome" autocomplete="name" data-el="su-name-input">
+            <div class="errmsg">Digite seu nome.</div>
+          </label>
+          <label data-el="su-email-field">
+            <div class="lbtop"><span>E-mail</span></div>
+            <input type="email" placeholder="voce@exemplo.com" autocomplete="email" data-el="su-email-input">
+            <div class="errmsg">Digite um e-mail válido.</div>
+          </label>
+          <label data-el="su-pass-field">
+            <div class="lbtop"><span>Senha</span></div>
+            <div class="inpw">
+              <input type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" data-el="su-pass-input">
+              <button type="button" class="eyeb" data-el="su-eye-toggle" aria-label="Mostrar senha">
+                <svg data-el="su-eye-icon" viewBox="0 0 24 24"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="errmsg">A senha precisa ter pelo menos 8 caracteres.</div>
+          </label>
+
+          <button type="submit" class="btn primary" data-el="signup-submit">
+            <span class="btxt">Criar conta e começar o teste</span>
+            <span class="spin"></span>
+          </button>
+        </form>
+
+        <div class="rule">ou</div>
+
+        <button type="button" class="btn google" data-el="google-btn-2">
+          <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.6 29.3 35.5 24 35.5c-6.9 0-12.5-5.6-12.5-12.5S17.1 10.5 24 10.5c3.2 0 6 1.1 8.2 3l6-6C34.5 4.1 29.5 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.1 19 12.5 24 12.5c3.2 0 6 1.1 8.2 3l6-6C34.5 6.1 29.5 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.2-2 13.9-5.4l-6.4-5.4c-2 1.5-4.6 2.3-7.5 2.3-5.3 0-9.7-3.6-11.3-8.4l-6.6 5.1C9.4 39.6 16.1 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.9 36 44 30.6 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
+          <span class="btxt">Continuar com Google</span>
+          <span class="spin"></span>
+        </button>
+        <p class="legal">Ao criar a conta, você concorda com os <a href="/termos">Termos de uso</a> e a <a href="/privacidade">Política de privacidade</a>.</p>
+        <div class="foot">Já tem conta? <a href="#" data-el="back-to-login-4">Entrar</a></div>
+      </div>
+
+      <!-- ENTRANDO (sucesso) -->
+      <div class="view" data-view="success">
+        <div class="okbox">
+          <div class="ic">
+            <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <h1>Tudo certo!</h1>
+          <p class="sub">Login realizado. Redirecionando…</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" data-el="toast"></div>
+
+<script src="preco.js"></script>
+<script type="module" src="auth.js"></script>
+</body>
+</html>

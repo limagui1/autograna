@@ -1,0 +1,174 @@
+# ===========================================================================
+# Autograna no Netlify. Tudo aqui vale sozinho quando o site está ligado ao GitHub.
+#   - publish: só a pasta "site" vai para o ar (código do servidor e guias ficam de fora)
+#   - command: antes de publicar, scripts/configurar.mjs monta a configuração do Firebase
+#     a partir das variáveis do Netlify (você não edita arquivo nenhum)
+# ===========================================================================
+[build]
+  publish = "site"
+  command = "node scripts/configurar.mjs"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# ---------------------------------------------------------------------------
+# Endereços sem ".html": /app, /entrar, /admin, /termos, /privacidade, /obrigado.
+# ---------------------------------------------------------------------------
+[[redirects]]
+  from = "/login"
+  to = "/entrar"
+  status = 301
+
+[[redirects]]
+  from = "/app"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/entrar"
+  to = "/entrar.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/termos"
+  to = "/termos.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacidade"
+  to = "/privacidade.html"
+  status = 200
+
+[[redirects]]
+  from = "/obrigado"
+  to = "/obrigado.html"
+  status = 200
+
+# ---------------------------------------------------------------------------
+# Segurança (vale para tudo).
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), usb=(), browsing-topics=()"
+
+# Regras de conteúdo das páginas: só roda código do próprio site, do Firebase/Google
+# (login e banco de dados) e as fontes do Google. Script de qualquer outro lugar é bloqueado.
+# No app (/app) também entra o Mercado Pago: os campos seguros do cartão são dele.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+[[headers]]
+  for = "/app"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com https://sdk.mercadopago.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolivre.com https://*.mlstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.mlstatic.com; font-src 'self' data: https://fonts.gstatic.com https://*.mlstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com https://sdk.mercadopago.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolivre.com https://*.mlstatic.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolivre.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+[[headers]]
+  for = "/app.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com https://sdk.mercadopago.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolivre.com https://*.mlstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.mlstatic.com; font-src 'self' data: https://fonts.gstatic.com https://*.mlstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com https://sdk.mercadopago.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolivre.com https://*.mlstatic.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolivre.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+[[headers]]
+  for = "/entrar"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/entrar.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/termos"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+[[headers]]
+  for = "/termos.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+[[headers]]
+  for = "/privacidade"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+[[headers]]
+  for = "/privacidade.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+[[headers]]
+  for = "/obrigado"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/obrigado.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/404.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://apis.google.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://content.googleapis.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

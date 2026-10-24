@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel de usuários · Autograna</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#3B6BF5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF; --side:#F6F7F8; --ink:#15181C; --muted:#69707A; --faint:#9AA1AA; --line:#E7E9EC; --hover:#F3F4F6; --track:#ECEEF0;
+  --in:#1B8A5A; --out:#C4402F; --warn:#A8620A; --accent:#3B6BF5;
+  --sans:'Geist',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{ color-scheme:dark;
+    --bg:#0F1113; --side:#15181B; --ink:#EDEFF1; --muted:#98A0A9; --faint:#6D747D; --line:#262A2F; --hover:#1B1F23; --track:#252A2F;
+    --in:#4CC58F; --out:#F08574; --warn:#E3AE4D; --accent:#6E93FF; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;overscroll-behavior-y:none}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased;min-height:100dvh}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 40px calc(48px + env(safe-area-inset-bottom,0px))}
+@media (max-width:640px){.wrap{padding:18px 16px calc(40px + env(safe-area-inset-bottom,0px))}}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+h1{margin:0;font-size:26px;letter-spacing:-.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:14px;display:flex;align-items:center;gap:8px}
+.live{width:8px;height:8px;border-radius:50%;background:var(--in);box-shadow:0 0 0 0 color-mix(in srgb,var(--in) 50%,transparent);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.live{animation:none}}
+.back{color:var(--ink);font-weight:500;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px;font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:26px}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.k{background:var(--side);border-radius:14px;padding:14px 16px}
+.k span{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted)}
+.k b{display:block;font-size:26px;font-weight:600;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.k small{display:block;font-size:12px;color:var(--muted)}
+.k.hl{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 16%,var(--side)),var(--side))}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none;background:var(--faint)}
+.dot.on{background:var(--in)}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.tabs{display:flex;gap:2px;padding:3px;border-radius:99px;background:var(--side);overflow-x:auto;max-width:100%;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:none;padding:6px 12px;border-radius:99px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap}
+.tabs button.on{background:var(--bg);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.tabs button i{font-style:normal;color:var(--faint);margin-left:4px;font-variant-numeric:tabular-nums}
+input[type=search]{flex:1 1 220px;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-height:40px}
+input[type=search]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.list{border-top:1px solid var(--line)}
+.u{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.av{position:relative;width:38px;height:38px;border-radius:50%;background:var(--side);display:grid;place-items:center;font-weight:600;color:var(--muted);text-transform:uppercase}
+.av .dot{position:absolute;right:-1px;bottom:-1px;border:2px solid var(--bg);width:12px;height:12px}
+.who{min-width:0}
+.who b{display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who small{display:block;color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{text-align:right;font-size:13px;color:var(--muted);white-space:nowrap}
+.meta b{color:var(--ink);font-weight:500}
+.chip{display:inline-block;font-size:11.5px;font-weight:500;padding:1px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);margin-left:6px;vertical-align:1px}
+.chip.active{color:var(--in);border-color:color-mix(in srgb,var(--in) 40%,var(--line))}
+.chip.trial{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.chip.off{color:var(--out);border-color:color-mix(in srgb,var(--out) 35%,var(--line))}
+.chip.cancel{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,var(--line))}
+.empty{padding:36px 0;text-align:center;color:var(--muted)}
+.msg{max-width:440px;margin:18vh auto 0;text-align:center;padding:0 16px}
+.msg p{color:var(--muted)}
+.note{margin-top:22px;font-size:12.5px;color:var(--faint)}
+.fb{margin-top:38px}
+.fb h2{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
+.fb .s2{color:var(--muted);font-size:13.5px;margin:0 0 16px}
+.rs{display:grid;gap:10px;margin-bottom:22px}
+.r{display:grid;grid-template-columns:minmax(0,250px) 1fr 44px;gap:14px;align-items:center;font-size:14px}
+.r .tr{height:8px;border-radius:99px;background:var(--side);overflow:hidden}
+.r .tr i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.r b{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}
+.cm{border-top:1px solid var(--line);padding:12px 0;font-size:14.5px;line-height:1.45}
+.cm small{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+@media (max-width:640px){.r{grid-template-columns:1fr 44px}.r .tr{grid-column:1/-1}}
+@media (max-width:640px){.u{grid-template-columns:auto minmax(0,1fr)}.meta{grid-column:2;text-align:left}}
+</style>
+<script>try { var p = location.pathname; if (/\.html$/.test(p)) history.replaceState(null, '', (p === '/index.html' ? '/' : p.replace(/\.html$/, '')) + location.search + location.hash); } catch (e) {}</script>
+</head>
+<body>
+<div class="wrap" id="root"><div class="msg"><p>Carregando painel…</p></div></div>
+<script type="module">
+import * as CFG from './firebase-config.js';
+const FB_CONFIG = (CFG.AUTH_PELO_SITE === true && location.protocol === 'https:') ? Object.assign({}, CFG.firebaseConfig, { authDomain: location.host }) : CFG.firebaseConfig;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const app = initializeApp(FB_CONFIG), auth = getAuth(app), db = getFirestore(app);
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const ms = v => v && v.toMillis ? v.toMillis() : (v ? +new Date(v) : 0);
+const ONLINE_MS = 150000, DAY = 864e5;
+const TAB_NAMES = { home:'Início', lanc:'Lançamentos', contas:'Contas', metas:'Metas', analise:'Análise', ajustes:'Ajustes', assinatura:'tela de assinatura' };
+const st = { pres: {}, bill: {}, fb: {}, fbOff: false, f: 'all', q: '', me: '' };
+
+function ago(t){
+  if (!t) return 'nunca';
+  const d = Date.now() - t;
+  if (d < ONLINE_MS) return 'agora';
+  if (d < 3600e3) return 'há ' + Math.round(d / 60e3) + ' min';
+  if (d < DAY) return 'há ' + Math.round(d / 3600e3) + ' h';
+  if (d < 2 * DAY) return 'ontem';
+  if (d < 30 * DAY) return 'há ' + Math.round(d / DAY) + ' dias';
+  return new Date(t).toLocaleDateString('pt-BR');
+}
+const dd = t => t ? new Date(t).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '') : '';
+function statusOf(b, email){
+  if (email && email.toLowerCase() === st.me) return { k: 'admin', l: 'Dono' };
+  if (!b) return { k: 'none', l: 'Sem registro' };
+  const until = ms(b.accessUntil), now = Date.now();
+  const pix = ms(b.pixUntil) > now && ms(b.trialEnd) <= now && b.mpStatus !== 'authorized';
+  if (until > now) {
+    if (pix) return { k: 'active', l: 'Assinante · Pix' };
+    if (b.status === 'active') return { k: 'active', l: 'Assinante' };
+    if (b.status === 'cancelled') return { k: 'cancel', l: 'Cancelou · usa até ' + dd(until) };
+    return { k: 'trial', l: b.mpStatus === 'authorized' ? 'Em teste · cartão cadastrado' : 'Em teste' };
+  }
+  return { k: 'off', l: b.status === 'cancelled' ? 'Cancelado' : 'Teste vencido' };
+}
+function people(){
+  const ids = new Set([...Object.keys(st.pres), ...Object.keys(st.bill)]), now = Date.now(), out = [];
+  ids.forEach(id => {
+    const p = st.pres[id] || {}, b = st.bill[id];
+    const email = p.email || (b && b.email) || '', seen = ms(p.lastSeen);
+    out.push({ id, p, b, email, name: p.name || (b && b.name) || email.split('@')[0] || 'Sem nome', seen,
+      online: seen && now - seen < ONLINE_MS, s: statusOf(b, email), created: b ? ms(b.createdAt) : 0 });
+  });
+  return out.sort((a, c) => (c.online - a.online) || (c.seen - a.seen) || (c.created - a.created));
+}
+function render(){
+  const all = people(), now = Date.now(), today = new Date(); today.setHours(0, 0, 0, 0);
+  const n = k => all.filter(x => x.s.k === k).length;
+  const online = all.filter(x => x.online).length;
+  const activeToday = all.filter(x => x.seen >= +today).length;
+  const subs = all.filter(x => x.s.k === 'active');
+  const revenue = subs.reduce((a, x) => a + (Number(x.b.amount) || 0), 0);
+  const new7 = all.filter(x => x.created && now - x.created < 7 * DAY).length;
+  const off = n('off') + n('none');
+  const F = { all: () => true, online: x => x.online, active: x => x.s.k === 'active', trial: x => x.s.k === 'trial', cancel: x => x.s.k === 'cancel', off: x => x.s.k === 'off' || x.s.k === 'none' };
+  const q = st.q.trim().toLowerCase();
+  const list = all.filter(F[st.f]).filter(x => !q || (x.name + ' ' + x.email).toLowerCase().includes(q));
+  const tabs = [['all','Todos',all.length],['online','Online',online],['active','Assinantes',subs.length],['trial','Em teste',n('trial')],['cancel','Cancelaram',n('cancel')],['off','Sem acesso',off]];
+  const qEl = $('#q'), hadFocus = qEl && document.activeElement === qEl, caret = qEl ? qEl.selectionStart : 0;
+  $('#root').innerHTML =
+    '<div class="top"><div><h1>Painel de usuários</h1><p class="sub"><i class="live"></i>Atualiza sozinho, em tempo real</p></div><a class="back" href="/app">Voltar ao app</a></div>' +
+    '<div class="kpis">' +
+      '<div class="k hl"><span><i class="dot on"></i>Online agora</span><b>' + online + '</b><small>' + activeToday + ' usaram hoje</small></div>' +
+      '<div class="k"><span>Usuários</span><b>' + all.length + '</b><small>' + (new7 === 1 ? '1 novo' : new7 + ' novos') + ' nos últimos 7 dias</small></div>' +
+      '<div class="k"><span>Assinantes</span><b>' + subs.length + '</b><small>' + n('trial') + ' em teste (' + all.filter(x => x.s.k === 'trial' && x.b && x.b.mpStatus === 'authorized').length + ' com cartão) · ' + off + ' sem acesso</small></div>' +
+      '<div class="k"><span>Receita mensal</span><b>' + BRL.format(revenue) + '</b><small>' + (all.length ? Math.round(subs.length / Math.max(1, all.length - n('admin')) * 100) : 0) + '% viraram assinantes</small></div>' +
+    '</div>' +
+    '<div class="bar"><div class="tabs" role="tablist">' + tabs.map(t => '<button data-f="' + t[0] + '" class="' + (st.f === t[0] ? 'on' : '') + '">' + t[1] + '<i>' + t[2] + '</i></button>').join('') + '</div>' +
+      '<input type="search" id="q" placeholder="Buscar por nome ou e-mail" value="' + esc(st.q) + '" aria-label="Buscar usuário"></div>' +
+    '<div class="list">' + (list.length ? list.map(x => {
+      const b = x.b || {}, p = x.p;
+      let plan = '';
+      if (x.s.k === 'active' && ms(b.pixUntil) > now && b.mpStatus !== 'authorized') plan = BRL.format(Number(b.amount) || 0) + ' no Pix · pago até ' + dd(ms(b.pixUntil));
+      else if (x.s.k === 'active') plan = BRL.format(Number(b.amount) || 0) + '/mês no cartão' + (b.paidUntil ? ' · renova ' + dd(ms(b.paidUntil)) : '');
+      else if (x.s.k === 'trial' && ms(b.pixUntil) > now) plan = 'teste até ' + dd(ms(b.trialEnd)) + ' · já pagou o Pix';
+      else if (x.s.k === 'trial' && b.mpStatus === 'authorized') plan = '1ª cobrança em ' + dd(ms(b.trialEnd));
+      else if (x.s.k === 'trial') plan = 'teste até ' + dd(ms(b.trialEnd));
+      else if (b.mpStatus === 'pending') plan = 'abriu o pagamento';
+      const why = st.fb[x.id];
+      if (x.s.k === 'off' && why && why.reasonLabel) plan = (plan ? plan + ' · ' : '') + 'disse: ' + why.reasonLabel;
+      const where = x.online ? '<b>online</b>' + (p.tab ? ' · vendo ' + esc(TAB_NAMES[p.tab] || p.tab) : '') : (x.seen ? 'visto ' + ago(x.seen) : 'ainda não abriu o app novo');
+      return '<div class="u"><div class="av">' + esc((x.name || '?').trim().charAt(0) || '?') + '<i class="dot' + (x.online ? ' on' : '') + '"></i></div>' +
+        '<div class="who"><b>' + esc(x.name) + '<span class="chip ' + x.s.k + '">' + esc(x.s.l) + '</span></b><small>' + esc(x.email) + (p.device ? ' · ' + esc(p.device) : '') + '</small></div>' +
+        '<div class="meta">' + where + (plan ? '<br>' + esc(plan) : '') + '</div></div>';
+    }).join('') : '<div class="empty">Ninguém por aqui com esse filtro.</div>') + '</div>' +
+    '<p class="note">“Online” = app aberto nos últimos 2 minutos. Quem ainda não abriu a versão nova do app aparece depois do primeiro acesso.</p>' +
+    whyHTML();
+  const nq = $('#q'); if (hadFocus) { nq.focus(); try { nq.setSelectionRange(caret, caret); } catch (e) {} }
+}
+// Respostas do e-mail "Não quer continuar? Conta pra gente por quê".
+const REASONS = { caro: 'Achei caro', dificil: 'Não entendi como usar', poucouso: 'Não usei o suficiente', faltou: 'Faltou alguma coisa que eu precisava', outroapp: 'Prefiro outro app ou planilha', outro: 'Outro motivo' };
+function whyHTML(){
+  const xs = Object.entries(st.fb).map(([id, f]) => Object.assign({ id }, f));
+  let h = '<section class="fb"><h2>Por que não assinaram</h2>';
+  if (st.fbOff) return h + '<p class="s2">Para ver as respostas, publique as regras novas do banco (arquivo firestore.rules).</p></section>';
+  if (!xs.length) return h + '<p class="s2">Ninguém respondeu ainda. Quem termina o teste sem assinar recebe um e-mail com a pergunta, e as respostas aparecem aqui.</p></section>';
+  const count = {}; xs.forEach(f => { if (f.reason) count[f.reason] = (count[f.reason] || 0) + 1; });
+  const total = Object.values(count).reduce((a, n) => a + n, 0), max = Math.max(1, ...Object.values(count));
+  h += '<p class="s2">' + (total === 1 ? '1 resposta' : total + ' respostas') + ' ao e-mail do fim do teste.</p><div class="rs">' +
+    Object.keys(REASONS).filter(k => count[k]).sort((a, c) => count[c] - count[a]).map(k =>
+      '<div class="r"><span>' + esc(REASONS[k]) + '</span><span class="tr"><i style="width:' + Math.round(count[k] / max * 100) + '%"></i></span><b>' + count[k] + '</b></div>').join('') + '</div>';
+  const cms = xs.filter(f => f.comment).sort((a, c) => ms(c.commentAt) - ms(a.commentAt)).slice(0, 20);
+  if (cms.length) h += cms.map(f => '<div class="cm">“' + esc(f.comment) + '”<small>' + esc(f.name || f.email || 'Sem nome') + (f.reasonLabel ? ' · ' + esc(f.reasonLabel) : '') + ' · ' + dd(ms(f.commentAt)) + '</small></div>').join('');
+  return h + '</section>';
+}
+function deny(msg){
+  $('#root').innerHTML = '<div class="msg"><h1>Acesso restrito</h1><p>' + esc(msg) + '</p><p><a class="back" href="/app">Voltar ao app</a></p></div>';
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { st.f = b.dataset.f; render(); } });
+document.addEventListener('input', e => { if (e.target.id === 'q') { st.q = e.target.value; render(); } });
+setInterval(() => { if (Object.keys(st.pres).length) render(); }, 30000);
+
+onAuthStateChanged(auth, user => {
+  if (!user) { location.replace('/entrar'); return; }
+  st.me = (user.email || '').toLowerCase();
+  const fail = err => deny(err && err.code === 'permission-denied' ? 'Este painel é só para o dono do app.' : 'Não consegui carregar os dados agora. Recarregue a página.');
+  let ready = 0; const go = () => { if (++ready >= 2) render(); };
+  onSnapshot(collection(db, 'presence'), snap => { st.pres = {}; snap.forEach(d => { st.pres[d.id] = d.data(); }); ready >= 2 ? render() : go(); }, fail);
+  onSnapshot(collection(db, 'billing'), snap => { st.bill = {}; snap.forEach(d => { st.bill[d.id] = d.data(); }); ready >= 2 ? render() : go(); }, fail);
+  // Respostas do porquê: se as regras novas ainda não foram publicadas, o painel segue funcionando sem elas.
+  onSnapshot(collection(db, 'feedback'), snap => { st.fb = {}; st.fbOff = false; snap.forEach(d => { st.fb[d.id] = d.data(); }); if (ready >= 2) render(); }, () => { st.fbOff = true; if (ready >= 2) render(); });
+});
+</script>
+</body>
+</html>
