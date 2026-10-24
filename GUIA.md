@@ -1,7 +1,7 @@
 # Autograna no ar — passo a passo
 
 O que falta para o app funcionar com **GitHub**, **Netlify**, **Firebase** e **Mercado Pago** (Pix e cartão), com os e-mails automáticos.
-O endereço do site é `autograna-app.netlify.app`. Onde aparecer `SEU-PROJETO`, use o ID do projeto no Firebase.
+O endereço do site é `autograna-app.netlify.app` e o projeto do Firebase é `autograna-9d843`.
 
 ## 0. O que já está pronto
 
@@ -211,7 +211,7 @@ No Firebase, abra **Authentication → Configurações → Domínios autorizados
 
 ### 6.2 Autorize o endereço no Google (login no app instalado)
 
-1. Entrando com o autograna11, abra [a página de credenciais do Google Cloud](https://console.cloud.google.com/apis/credentials?project=SEU-PROJETO) do seu projeto.
+1. Entrando com o autograna11, abra [a página de credenciais do Google Cloud](https://console.cloud.google.com/apis/credentials?project=autograna-9d843) do seu projeto.
 2. Em **IDs do cliente OAuth 2.0**, abra **Web client (auto created by Google Service)**.
 3. Em **Origens JavaScript autorizadas → Adicionar URI**, coloque `https://autograna-app.netlify.app`
 4. Em **URIs de redirecionamento autorizados → Adicionar URI**, coloque `https://autograna-app.netlify.app/__/auth/handler`

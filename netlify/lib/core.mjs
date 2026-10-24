@@ -292,11 +292,13 @@ export async function refreshFromMp(uid, b, preId, extraPayment = null) {
   }
   let payments = [];
   try {
-    const q = '/authorized_payments/search?preapproval_id=' + encodeURIComponent(pre.id) + '&limit=50';
-    const r = await mp('GET', q + '&offset=0');
+    // Sem "limit": o Mercado Pago recusa valores que não aceita nessa busca. Se houver mais de uma página,
+    // busca também a última (as cobranças mais recentes são as que importam).
+    const q = '/authorized_payments/search?preapproval_id=' + encodeURIComponent(pre.id);
+    const r = await mp('GET', q);
     payments = (r && r.results) || [];
-    const total = r && r.paging && r.paging.total;
-    if (total > payments.length) { const last = await mp('GET', q + '&offset=' + Math.max(0, total - 50)); payments = payments.concat((last && last.results) || []); }
+    const total = Number(r && r.paging && r.paging.total) || 0;
+    if (payments.length && total > payments.length) { const last = await mp('GET', q + '&offset=' + Math.max(0, total - payments.length)); payments = payments.concat((last && last.results) || []); }
   } catch (e) { console.warn('[payments-search]', e.message); }
   if (extraPayment) payments.push(extraPayment);
   const patch = applyPreapproval(b, pre, payments);
